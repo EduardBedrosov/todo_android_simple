@@ -10,7 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.todoandroidsimple.data.local.note.Note
+import com.example.todoandroidsimple.data.local.note.NoteEntity
 import com.example.todoandroidsimple.ui.Screen
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -43,7 +43,7 @@ fun NoteListScreen(navController: NavController, viewModel: NoteViewModel = hilt
         Button(
             onClick = {
                 if (title.isNotBlank() && content.isNotBlank()) {
-                    viewModel.addNote(Note(title = title, content = content, timestamp = System.currentTimeMillis()))
+                    viewModel.addNote(NoteEntity(title = title, content = content, timestamp = System.currentTimeMillis()))
                     title = ""
                     content = ""
                 }
@@ -64,7 +64,7 @@ fun NoteListScreen(navController: NavController, viewModel: NoteViewModel = hilt
 }
 
 @Composable
-fun NoteItem(note: Note, onDelete: () -> Unit, onClick: () -> Unit) {
+fun NoteItem(note: NoteEntity, onDelete: () -> Unit, onClick: () -> Unit) {
     val formattedDate = remember {
         SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault()).format(Date(note.timestamp))
     }

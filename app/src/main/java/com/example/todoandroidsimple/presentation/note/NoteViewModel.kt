@@ -2,7 +2,7 @@ package com.example.todoandroidsimple.presentation.note
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todoandroidsimple.data.local.note.Note
+import com.example.todoandroidsimple.data.local.note.NoteEntity
 import com.example.todoandroidsimple.data.repository.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +15,8 @@ class NoteViewModel @Inject constructor(
     private val repository: NoteRepository
 ) : ViewModel() {
 
-    private val _notes = MutableStateFlow<List<Note>>(emptyList())
-    val notes: StateFlow<List<Note>> = _notes
+    private val _notes = MutableStateFlow<List<NoteEntity>>(emptyList())
+    val notes: StateFlow<List<NoteEntity>> = _notes
 
     init {
         getAllNotes()
@@ -30,13 +30,13 @@ class NoteViewModel @Inject constructor(
         }
     }
 
-    fun addNote(note: Note) {
+    fun addNote(note: NoteEntity) {
         viewModelScope.launch {
             repository.insertNote(note)
         }
     }
 
-    fun deleteNote(note: Note) {
+    fun deleteNote(note: NoteEntity) {
         viewModelScope.launch {
             repository.deleteNote(note)
         }

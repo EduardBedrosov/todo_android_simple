@@ -10,7 +10,7 @@ fun BottomNavigationBar(navController: NavController) {
     val screens = listOf(
         Screen.NoteList,
         Screen.Search,
-        Screen.Books,
+        Screen.Saved,
         Screen.Profile
     )
 
@@ -21,7 +21,7 @@ fun BottomNavigationBar(navController: NavController) {
             NavigationBarItem(
                 selected = currentRoute == screen.route,
                 onClick = { navController.navigate(screen.route) },
-                icon = { Icon(screen.icon, contentDescription = screen.title) },
+                icon = { screen.icon?.let { Icon(it, contentDescription = screen.title) } },
                 label = { Text(screen.title) }
             )
         }

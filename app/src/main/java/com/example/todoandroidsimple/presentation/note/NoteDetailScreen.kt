@@ -15,7 +15,8 @@ fun NoteDetailScreen(
     viewModel: NoteViewModel = hiltViewModel()
 ) {
     val notes by viewModel.notes.collectAsState()
-    val note = notes.find { it.id == noteId }
+//    val note = notes.find { it.id == noteId }
+    val note = remember(notes, noteId) { notes.find { it.id == noteId } }
 
     var title by remember { mutableStateOf(note?.title ?: "") }
     var content by remember { mutableStateOf(note?.content ?: "") }
@@ -26,7 +27,7 @@ fun NoteDetailScreen(
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
-            label = { Text("Title") },
+            label = { Text(note?.title ?: "Title") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -35,7 +36,7 @@ fun NoteDetailScreen(
         OutlinedTextField(
             value = content,
             onValueChange = { content = it },
-            label = { Text("Content") },
+            label = { Text(note?.content ?: "Content") },
             modifier = Modifier.fillMaxWidth()
         )
 

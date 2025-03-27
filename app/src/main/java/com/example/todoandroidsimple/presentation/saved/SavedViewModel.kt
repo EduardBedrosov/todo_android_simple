@@ -1,4 +1,4 @@
-package com.example.todoandroidsimple.presentation.book
+package com.example.todoandroidsimple.presentation.saved
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,32 +11,29 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BookViewModel @Inject constructor(
+class SavedViewModel @Inject constructor(
     private val repository: BookRepository
-) : ViewModel() {
+): ViewModel() {
 
     private val _books = MutableStateFlow<List<BookEntity>>(emptyList())
     val books = _books.asStateFlow()
 
-    fun searchBooks(query: String) {
-        viewModelScope.launch {
-            println("22222");
-            val results = repository.searchBooks(query)
-            _books.value = results
-            println("33333333");
 
-        }
-    }
-
-    fun saveBook(book: BookEntity) {
-        viewModelScope.launch {
-            repository.insertBook(book)
-        }
+    init {
+        getAllSavedBooks()
     }
 
     fun deleteBook(book: BookEntity) {
         viewModelScope.launch {
             repository.deleteBook(book)
+        }
+    }
+
+    private fun getAllSavedBooks() {
+        viewModelScope.launch {
+            repository.getSavedBooks().collect { savedBookList->
+                _books.value = savedBookList
+            }
         }
     }
 }

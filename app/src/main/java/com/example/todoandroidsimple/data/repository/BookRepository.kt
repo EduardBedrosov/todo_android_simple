@@ -27,4 +27,5 @@ class BookRepository @Inject constructor(
         val response = googleBooksApi.searchBooks(query)
         return response.items?.map { it.toBookEntity() } ?: emptyList()
     }
+
 }
