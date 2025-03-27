@@ -1,5 +1,6 @@
 package com.example.todoandroidsimple.presentation.book_search
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,20 +15,55 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.todoandroidsimple.data.local.book.BookEntity
 import com.example.todoandroidsimple.ui.Screen
+import kotlinx.coroutines.delay
 
 @Composable
 fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hiltViewModel()) {
-    var searchQuery by remember { mutableStateOf("") }
+
+
+    val searchQuery by viewModel.searchValue.collectAsStateWithLifecycle()
     val books by viewModel.books.collectAsState()
 
+
+    var debouncedQuery by remember { mutableStateOf("") }
+//    var debouncedQuery by remember { mutableStateOf(TextFieldValue("")) }
+
+    LaunchedEffect(searchQuery) {
+//        if (searchQuery.isNotBlank() && searchQuery.isNotEmpty()) {
+//            viewModel.searchBooks(searchQuery)
+//        }
+        delay(1500) // Debounce delay of 500ms
+        debouncedQuery = searchQuery
+    }
+
+    LaunchedEffect(debouncedQuery) {
+        if (debouncedQuery.isNotBlank()) {
+            viewModel.searchBooks(debouncedQuery)
+        }
+    }
+    SearchContent(onClickItem = {
+        navController.navigate(Screen.SearchDetail.createRoute(book.id))
+    })
+}
+
+@Composable
+fun SearchContent(
+    onClickItem:(String) -> Unit,
+
+) {
+
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
@@ -36,7 +72,7 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hilt
             label = { Text("Search Books") },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = {
-                if (searchQuery.isNotBlank()) {
+                if (searchQuery.isNotBlank() && searchQuery.isNotEmpty()) {
                     viewModel.searchBooks(searchQuery)
                 }
             }),
@@ -47,7 +83,7 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hilt
 
         Button(
             onClick = {
-                if (searchQuery.isNotBlank() ) {
+                if (searchQuery.isNotBlank()) {
                     println("111111");
                     viewModel.searchBooks(searchQuery)
                 }
@@ -72,11 +108,7 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hilt
                         book = book,
                         onSaveClick = { viewModel.saveBook(book) },
                         onClick = {
-                            println("0000000000111111111");
-                            println("All book IDs2: ${books.map { it.id }}")
-                            println("Requested bookId2: $books.id")
-//                            navController.navigate("search_detail/${book.id}")
-                            navController.navigate(Screen.SearchDetail.createRoute(book.id))
+                            onClickItem(book)
                         }
                     )
                 }
@@ -115,3 +147,11 @@ fun BookItem(book: BookEntity, onSaveClick: () -> Unit, onClick: () -> Unit) {
         }
     }
 }
+//
+//@Preview(
+//    device = "id:pixel_6_pro"
+//)
+//@Composable
+//fun SearchScreenPreview() {
+//
+//}
