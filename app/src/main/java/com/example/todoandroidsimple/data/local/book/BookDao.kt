@@ -15,3 +15,4 @@ interface BookDao {
     @Delete
     suspend fun deleteBook(book: BookEntity)
 }
+

@@ -6,7 +6,6 @@ import androidx.room.Room
 import com.example.todoandroidsimple.data.local.book.BookDao
 import com.example.todoandroidsimple.data.local.book.BookDatabase
 import com.example.todoandroidsimple.data.local.note.NoteDao
-import com.example.todoandroidsimple.data.local.note.NoteDatabase
 import com.example.todoandroidsimple.data.remote.GoogleBooksApi
 import com.example.todoandroidsimple.data.repository.BookRepository
 import com.example.todoandroidsimple.data.repository.NoteRepository
@@ -28,18 +27,18 @@ object AppModule {
         return app.applicationContext
     }
 
-    @Provides
-    @Singleton
-    fun provideNoteDatabase(context: Context): NoteDatabase {
-        return Room.databaseBuilder(
-            context.applicationContext,
-            NoteDatabase::class.java,
-            "notes_db"
-        ).build()
-    }
+//    @Provides
+//    @Singleton
+//    fun provideNoteDatabase(context: Context): NoteDatabase {
+//        return Room.databaseBuilder(
+//            context.applicationContext,
+//            NoteDatabase::class.java,
+//            "notes_db"
+//        ).build()
+//    }
 
-    @Provides
-    fun provideNoteDao(database: NoteDatabase) = database.noteDao()
+//    @Provides
+//    fun provideNoteDao(database: NoteDatabase) = database.noteDao()
 
     @Provides
     @Singleton
@@ -57,8 +56,12 @@ object AppModule {
         ).build()
     }
 
+
     @Provides
     fun provideBookDao(database: BookDatabase) = database.bookDao()
+
+    @Provides
+    fun provideNoteDao(database: BookDatabase) = database.noteDao()
 
     @Provides
     @Singleton

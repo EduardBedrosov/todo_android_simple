@@ -31,13 +31,39 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hilt
     val searchQuery by viewModel.searchValue.collectAsStateWithLifecycle()
     val books by viewModel.books.collectAsState()
 
+    SearchContent(
+        books = books,
+        searchQuery = searchQuery,
+        onClick = { bookId ->
+            navController.navigate(Screen.SearchDetail.createRoute(bookId))
+        },
+        onSaveClick = { bookId ->
+            viewModel.saveBookById(bookId)
+        },
+        onUpdate = {
+            viewModel.updateSearchValue(it)
+        }
+    )
+}
+
+@Composable
+fun SearchContent(
+    books: List<BookItem>,
+    searchQuery: String,
+    onClick: (String) -> Unit,
+    onSaveClick: (String) -> Unit,
+    onUpdate: (String) -> Unit
+) {
+
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
             value = searchQuery,
-            onValueChange = { viewModel.updateSearchValue(it) },
+            onValueChange = onUpdate,
             label = { Text("Search Books") },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions.Default,
@@ -48,7 +74,7 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hilt
         Spacer(modifier = Modifier.height(8.dp))
 
 
-            Text("Search")
+        Text("Search")
 
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -62,10 +88,8 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hilt
 
                     BookItem(
                         book = book,
-                        onSaveClick = { viewModel.saveBookById(book.bookId) },
-                        onClick = {
-                            navController.navigate(Screen.SearchDetail.createRoute(book.bookId))
-                        }
+                        onSaveClick = onSaveClick,
+                        onClick = onClick
                     )
                 }
             }
@@ -74,12 +98,12 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hilt
 }
 
 @Composable
-fun BookItem(book: BookItem, onSaveClick: () -> Unit, onClick: () -> Unit) {
+fun BookItem(book: BookItem, onSaveClick: (String) -> Unit, onClick: (String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onClick() },
+            .clickable { onClick(book.bookId) },
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
@@ -89,7 +113,7 @@ fun BookItem(book: BookItem, onSaveClick: () -> Unit, onClick: () -> Unit) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(book.title, style = MaterialTheme.typography.titleMedium)
                 Text(book.authors, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                Button(onClick = onSaveClick) {
+                Button(onClick = { onSaveClick(book.bookId) }) {
                     println("666666")
                     Text("Save")
                 }
@@ -97,4 +121,17 @@ fun BookItem(book: BookItem, onSaveClick: () -> Unit, onClick: () -> Unit) {
         }
     }
 }
+
+@Preview(device = "id:pixel_4", showSystemUi = true)
+@Composable
+fun SearchContentPreview() {
+    SearchContent(
+        books = listOf(BookItem("gdhsg", title = "tutle", authors = "authors")),
+        searchQuery = "",
+        onClick = {},
+        onUpdate = {},
+        onSaveClick = {},
+    )
+}
+
 

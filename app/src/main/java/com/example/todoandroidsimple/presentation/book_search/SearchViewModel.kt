@@ -57,7 +57,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    //ete henc entityov petq lini save anel steghic harc
     fun saveBook(bookId: String) {
         viewModelScope.launch {
             _bookEntity.value.find { it.id == bookId }?.let { bookEntity ->
