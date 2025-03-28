@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.todoandroidsimple.data.BookItem
 
 import com.example.todoandroidsimple.data.local.book.BookEntity
 import com.example.todoandroidsimple.ui.Screen
@@ -42,26 +43,25 @@ fun SavedScreen(
 
     val books by viewModel.books.collectAsState()
 
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
 
         items(books) { book ->
-            println("000000000033333");
-            println("All book IDs1: ${books.map { it.id }}")
-            println("Requested bookId1: $books.id")
+
             SavedBookItem(
                 book = book,
                 onClick = {
-                    navController.navigate(Screen.SearchDetail.createRoute(book.id))
+                    navController.navigate(Screen.SearchDetail.createRoute(book.bookId))
                 }
             ){
-                viewModel.deleteBook(book)
+                viewModel.deleteBookById(book.bookId)
             }
         }
     }
 }
 
 @Composable
-fun SavedBookItem(book: BookEntity, onClick: () -> Unit, onDelete: () -> Unit) {
+fun SavedBookItem(book: BookItem, onClick: () -> Unit, onDelete: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

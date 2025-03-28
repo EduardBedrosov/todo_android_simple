@@ -3,6 +3,7 @@ package com.example.todoandroidsimple.data.repository
 import com.example.todoandroidsimple.data.local.book.BookDao
 import com.example.todoandroidsimple.data.local.book.BookEntity
 import com.example.todoandroidsimple.data.remote.GoogleBooksApi
+import com.example.todoandroidsimple.data.remote.dto.BookDto
 import com.example.todoandroidsimple.data.remote.dto.toBookEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -17,6 +18,10 @@ class BookRepository @Inject constructor(
 
     suspend fun insertBook(book: BookEntity) {
         bookDao.insertBook(book)
+    }
+
+    suspend fun getBookById(bookId: String): BookEntity {
+        return googleBooksApi.getBookById(bookId).toBookEntity()
     }
 
     suspend fun deleteBook(book: BookEntity) {

@@ -10,7 +10,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,41 +26,44 @@ class SearchViewModel @Inject constructor(
     private val _books = MutableStateFlow<List<BookItem>>(emptyList())
     val books = _books.asStateFlow()
 
-
+    private val _bookEntity = MutableStateFlow<List<BookEntity>>(emptyList())
 
     init {
         viewModelScope.launch {
-            _books.debounce(1500).collect{
-
+            _searchValue.debounce(500).collect { query ->
+                if (query.isNotBlank()) {
+                    searchBooks(query)
+                }
             }
         }
     }
 
-    fun searchBooks(query: String) {
+    fun updateSearchValue(newValue: String) {
+        _searchValue.value = newValue
+    }
+
+    private fun searchBooks(query: String) {
         viewModelScope.launch {
-            println("asdasdasdasdquery");
-            println(query);
             val results = repository.searchBooks(query)
             _books.value = results.toBookItems()
-            println("33333333");
-
+            _bookEntity.value = results
         }
     }
 
-    fun saveBook(book: BookEntity) {
+    fun saveBookById(bookId: String) {
         viewModelScope.launch {
-            repository.insertBook(book)
+            val bookEntity = repository.getBookById(bookId)
+            repository.insertBook(bookEntity)
         }
     }
 
-    fun deleteBook(book: BookEntity) {
+    //ete henc entityov petq lini save anel steghic harc
+    fun saveBook(bookId: String) {
         viewModelScope.launch {
-            repository.deleteBook(book)
+            _bookEntity.value.find { it.id == bookId }?.let { bookEntity ->
+                repository.insertBook(bookEntity)
+            }
         }
     }
 
-
-    //rememberner@ qcel viewmodel
-    //dataclass sarqel
-    //myus eji hamar arandzin id-ov kanchel
 }

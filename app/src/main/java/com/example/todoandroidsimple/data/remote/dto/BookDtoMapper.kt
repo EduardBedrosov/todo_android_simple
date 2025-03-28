@@ -1,5 +1,6 @@
 package com.example.todoandroidsimple.data.remote.dto
 
+import com.example.todoandroidsimple.data.BookDetailItem
 import com.example.todoandroidsimple.data.BookItem
 import com.example.todoandroidsimple.data.local.book.BookEntity
 
@@ -15,8 +16,7 @@ fun BookDto.toBookEntity(): BookEntity {
     )
 }
 
-
-fun List<BookEntity>.toBookItems():List<BookItem>{
+fun List<BookEntity>.toBookItems(): List<BookItem>{
     return this.map{
         it.toBookItem()
     }
@@ -26,6 +26,17 @@ fun BookEntity.toBookItem(): BookItem {
     return BookItem(
         bookId = id,
         title = title,
-        author = authors,
+        authors = authors,
+    )
+}
+
+fun BookEntity.toBookDetailItem(): BookDetailItem {
+    return BookDetailItem(
+        id = id,
+        title = title,
+        authors = authors,
+        description = description ?: "",
+        thumbnail = thumbnail ?: "",
+        previewLink = previewLink ?: ""
     )
 }
