@@ -16,6 +16,7 @@ import com.example.todoandroidsimple.presentation.profile.ProfileScreen
 import com.example.todoandroidsimple.presentation.note.NoteDetailScreen
 import com.example.todoandroidsimple.presentation.note.NoteListScreen
 import com.example.todoandroidsimple.presentation.note.NoteViewModel
+import com.example.todoandroidsimple.presentation.saved.BookDetailedScreen
 import com.example.todoandroidsimple.presentation.saved.SavedScreen
 import com.example.todoandroidsimple.presentation.saved.SavedViewModel
 
@@ -56,20 +57,20 @@ fun AppNavGraph() {
                 NoteDetailScreen(navController, noteId)
             }
 
-//            composable(
-//                route = Screen.SearchDetail.route,
-//                arguments = listOf(navArgument("bookId") { type = NavType.StringType })
-//            ) { backStackEntry ->
-//                val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
-//                SearchDetailScreen(navController, bookId)
-//            }
-
             composable(
                 route = Screen.SearchDetail.route,
                 arguments = listOf(navArgument("bookId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val bookId = backStackEntry.arguments?.getString("bookId") ?: return@composable
                 SearchDetailScreen(navController, bookId)
+            }
+
+            composable(
+                route = Screen.BookDetailed.route,
+                arguments = listOf(navArgument("bookId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val bookId = backStackEntry.arguments?.getString("bookId") ?: return@composable
+                BookDetailedScreen(navController, bookId)
             }
 
         }

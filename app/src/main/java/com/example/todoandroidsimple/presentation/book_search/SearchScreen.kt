@@ -1,7 +1,5 @@
 package com.example.todoandroidsimple.presentation.book_search
 
-import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -13,23 +11,29 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.example.todoandroidsimple.data.BookItem
 import com.example.todoandroidsimple.ui.Screen
-import kotlinx.coroutines.delay
 
 @Composable
 fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hiltViewModel()) {
 
     val searchQuery by viewModel.searchValue.collectAsStateWithLifecycle()
     val books by viewModel.books.collectAsState()
+    val errorMessage by viewModel.error.collectAsState()
+
+    if (!errorMessage.isNullOrEmpty()) {
+        Text(
+            text = errorMessage ?: "",
+            color = Color.Red,
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
 
     SearchContent(
         books = books,
@@ -38,7 +42,7 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hilt
             navController.navigate(Screen.SearchDetail.createRoute(bookId))
         },
         onSaveClick = { bookId ->
-            viewModel.saveBookById(bookId)
+            viewModel.saveBook(bookId)
         },
         onUpdate = {
             viewModel.updateSearchValue(it)

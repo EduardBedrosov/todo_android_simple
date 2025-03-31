@@ -1,12 +1,15 @@
 package com.example.todoandroidsimple.presentation.book_search
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoandroidsimple.data.BookItem
 import com.example.todoandroidsimple.data.local.book.BookEntity
 import com.example.todoandroidsimple.data.remote.dto.toBookItems
 import com.example.todoandroidsimple.data.repository.BookRepository
+import com.example.todoandroidsimple.util.NetworkUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +20,9 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val repository: BookRepository
+    private val repository: BookRepository,
+    private val networkUtils: NetworkUtils,
+    @ApplicationContext private val appContext: Context
 ) : ViewModel() {
 
     private val _searchValue = MutableStateFlow<String>("")
@@ -25,6 +30,9 @@ class SearchViewModel @Inject constructor(
 
     private val _books = MutableStateFlow<List<BookItem>>(emptyList())
     val books = _books.asStateFlow()
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error = _error.asStateFlow()
 
     private val _bookEntity = MutableStateFlow<List<BookEntity>>(emptyList())
 
@@ -44,23 +52,26 @@ class SearchViewModel @Inject constructor(
 
     private fun searchBooks(query: String) {
         viewModelScope.launch {
-            val results = repository.searchBooks(query)
-            _books.value = results.toBookItems()
-            _bookEntity.value = results
-        }
-    }
+            if (!networkUtils.isConnected()) {
+                _error.value = "No internet connection"
+                return@launch
+            }
 
-    fun saveBookById(bookId: String) {
-        viewModelScope.launch {
-            val bookEntity = repository.getBookById(bookId)
-            repository.insertBook(bookEntity)
+            try {
+                val results = repository.searchBooks(query)
+                _books.value = results.toBookItems()
+                _bookEntity.value = results
+                _error.value = null
+            } catch (e: Exception) {
+                _error.value = "Something went wrong"
+            }
         }
     }
 
     fun saveBook(bookId: String) {
         viewModelScope.launch {
             _bookEntity.value.find { it.id == bookId }?.let { bookEntity ->
-                repository.insertBook(bookEntity)
+                repository.insertBook(bookEntity, appContext)
             }
         }
     }

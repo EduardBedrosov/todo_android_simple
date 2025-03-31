@@ -1,4 +1,4 @@
-package com.example.todoandroidsimple.presentation.book_search
+package com.example.todoandroidsimple.presentation.saved
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,19 +26,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import java.io.File
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchDetailScreen(
+fun BookDetailedScreen(
     navController: NavController,
     bookId: String,
-    viewModel: SearchDetailViewModel = hiltViewModel()
+    viewModel: BookDetailedViewModel = hiltViewModel()
 ) {
     val book by viewModel.book.collectAsState()
     val uriHandler = LocalUriHandler.current
@@ -47,10 +49,11 @@ fun SearchDetailScreen(
         viewModel.loadBook(bookId)
     }
 
+    println("11111 121231233 $book")
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Search Detail") },
+                title = { Text("Book Detail") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -69,24 +72,25 @@ fun SearchDetailScreen(
                 .fillMaxSize()
         ) {
             if (book == null) {
+                println("11111 123 null")
                 Text("Loading...")
                 return@Column
             }
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(book!!.thumbnail)
+                    .data(File(book!!.thumbnailLocalUri))
                     .crossfade(true)
                     .build(),
-                contentDescription = "null",
+                contentDescription = "Book Cover",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .widthIn(max = 400.dp)
                     .height(250.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
-
             Spacer(modifier = Modifier.height(16.dp))
+
 
             Text(book!!.title, style = MaterialTheme.typography.headlineSmall)
             Text(book!!.authors, style = MaterialTheme.typography.bodyMedium)

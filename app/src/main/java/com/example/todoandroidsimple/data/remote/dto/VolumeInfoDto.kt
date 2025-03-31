@@ -8,5 +8,6 @@ data class VolumeInfoDto(
     @SerializedName("description") val description: String?,
     @SerializedName("publishedDate") val publishedDate: String?,
     @SerializedName("imageLinks") val imageLinks: ImageLinksDto?,
-    @SerializedName("previewLink") val previewLink: String?
+    @SerializedName("previewLink") val previewLink: String?,
+    @SerializedName("thumbnailLocalUri") val thumbnailLocalUri: String?
 )

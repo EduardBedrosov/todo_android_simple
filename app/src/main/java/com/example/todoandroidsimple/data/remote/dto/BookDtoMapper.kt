@@ -12,9 +12,11 @@ fun BookDto.toBookEntity(): BookEntity {
         description = this.volumeInfo.description ?: "No description available",
         publishedDate = this.volumeInfo.publishedDate ?: "Unknown Date",
         thumbnail = this.volumeInfo.imageLinks?.thumbnail ?: "",
-        previewLink = this.volumeInfo.previewLink ?: ""
+        previewLink = this.volumeInfo.previewLink ?: "",
+        thumbnailLocalUri = this.volumeInfo.thumbnailLocalUri ?: ""
     )
 }
+
 
 fun List<BookEntity>.toBookItems(): List<BookItem>{
     return this.map{
@@ -37,6 +39,7 @@ fun BookEntity.toBookDetailItem(): BookDetailItem {
         authors = authors,
         description = description ?: "",
         thumbnail = thumbnail ?: "",
-        previewLink = previewLink ?: ""
+        previewLink = previewLink ?: "",
+        thumbnailLocalUri = thumbnailLocalUri ?: ""
     )
 }

@@ -91,5 +91,8 @@ dependencies {
 
     //Coil
     implementation(libs.coil.compose)
-    
+
+    //Fresco
+    implementation(libs.fresco)
+
 }

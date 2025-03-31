@@ -17,5 +17,9 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector?
     data object SearchDetail : Screen("search_detail/{bookId}", "Search Detail") {
         fun createRoute(bookId: String) = "search_detail/$bookId"
     }
+    data object BookDetailed : Screen("book_detailed/{bookId}", "Book Detailed") {
+        fun createRoute(bookId: String) = "book_detailed/$bookId"
+    }
+
 
 }

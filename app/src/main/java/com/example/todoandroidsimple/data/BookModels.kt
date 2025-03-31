@@ -12,5 +12,6 @@ data class BookDetailItem(
     val authors: String,
     val description: String,
     val thumbnail: String,
-    val previewLink: String
+    val previewLink: String,
+    val thumbnailLocalUri: String
 )

@@ -1,4 +1,4 @@
-package com.example.todoandroidsimple.presentation.book_search
+package com.example.todoandroidsimple.presentation.saved
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchDetailViewModel @Inject constructor(
+class BookDetailedViewModel @Inject constructor(
     private val repository: BookRepository
 ) : ViewModel() {
 
@@ -22,9 +22,8 @@ class SearchDetailViewModel @Inject constructor(
 
     fun loadBook(bookId: String) {
         viewModelScope.launch {
-            val bookEntity = repository.getBookById(bookId)
-            _book.value = bookEntity.toBookDetailItem()
+            val bookEntity = repository.getBook(bookId)
+            _book.value = bookEntity?.toBookDetailItem()
         }
     }
-
 }
