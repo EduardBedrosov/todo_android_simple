@@ -8,19 +8,20 @@ import com.example.todoandroidsimple.data.remote.dto.toBookEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
-import com.example.todoandroidsimple.data.local.images.FrescoImageDownloader
+import com.example.todoandroidsimple.data.local.images.ImageDownloader
 
 @Singleton
 class BookRepository @Inject constructor(
     private val bookDao: BookDao,
-    private val googleBooksApi: GoogleBooksApi
+    private val googleBooksApi: GoogleBooksApi,
+    private val imageDownloader: ImageDownloader
 ) {
     fun getSavedBooks(): Flow<List<BookEntity>> = bookDao.getAllBooks()
 
 
-    suspend fun insertBook(book: BookEntity, appContext: Context) {
+    suspend fun insertBook(book: BookEntity) {
 
-        val localPath = FrescoImageDownloader.downloadAndSaveImage(appContext, book.thumbnail)
+        val localPath = imageDownloader.download(book.thumbnail)
         val updatedBook = book.copy(thumbnailLocalUri = localPath ?: "")
 
         bookDao.insertBook(updatedBook)

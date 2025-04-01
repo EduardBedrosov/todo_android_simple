@@ -16,9 +16,15 @@ import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.DataSource
 import com.facebook.imagepipeline.image.CloseableImage
 
-object FrescoImageDownloader {
+ interface  ImageDownloader{
+     suspend fun download(imageUrl: String?):String?
+ }
 
-    suspend fun downloadAndSaveImage(context: Context, imageUrl: String?): String? {
+class ImageDownloaderImpl1(
+    private val context: Context
+):ImageDownloader {
+
+    override suspend fun download(imageUrl: String?):String? {
         return suspendCancellableCoroutine { continuation ->
             val uri = imageUrl?.toUri()
             val imageRequest = ImageRequestBuilder

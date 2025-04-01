@@ -21,8 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val repository: BookRepository,
-    private val networkUtils: NetworkUtils,
-    @ApplicationContext private val appContext: Context
+    private val networkUtils: NetworkUtils
 ) : ViewModel() {
 
     private val _searchValue = MutableStateFlow<String>("")
@@ -67,13 +66,17 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
-
     fun saveBook(bookId: String) {
         viewModelScope.launch {
             _bookEntity.value.find { it.id == bookId }?.let { bookEntity ->
-                repository.insertBook(bookEntity, appContext)
+                repository.insertBook(bookEntity)
             }
         }
     }
 
+
+    1. Save change to Add, when click add, add the item to favorite with indicator that not downloaded
+    2 in favorites add button downlaod all , by Worker download all items
+    3 after finish get notification
+    4. work-runtime
 }

@@ -5,6 +5,8 @@ import android.content.Context
 import androidx.room.Room
 import com.example.todoandroidsimple.data.local.book.BookDao
 import com.example.todoandroidsimple.data.local.book.BookDatabase
+import com.example.todoandroidsimple.data.local.images.ImageDownloader
+import com.example.todoandroidsimple.data.local.images.ImageDownloaderImpl1
 import com.example.todoandroidsimple.data.local.note.NoteDao
 import com.example.todoandroidsimple.data.remote.GoogleBooksApi
 import com.example.todoandroidsimple.data.repository.BookRepository
@@ -27,6 +29,13 @@ object AppModule {
     @Singleton
     fun provideApplicationContext(app: Application): Context {
         return app.applicationContext
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideImageDownloader(context: Context): ImageDownloader {
+        return ImageDownloaderImpl1(context)
     }
 
     @Provides
@@ -54,8 +63,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideBookRepository(bookDao: BookDao, api: GoogleBooksApi): BookRepository {
-        return BookRepository(bookDao, api)
+    fun provideBookRepository(bookDao: BookDao, api: GoogleBooksApi, imageDownloader: ImageDownloader): BookRepository {
+        return BookRepository(bookDao, api, imageDownloader)
     }
 
     @Provides
