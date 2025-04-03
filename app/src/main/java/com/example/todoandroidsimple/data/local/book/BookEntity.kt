@@ -12,5 +12,6 @@ data class BookEntity(
     val publishedDate: String?,
     val thumbnail: String?,
     val previewLink: String?,
-    val thumbnailLocalUri: String? = null
+    val thumbnailLocalUri: String? = null,
+    val isImageDownloaded: Boolean = false
 )

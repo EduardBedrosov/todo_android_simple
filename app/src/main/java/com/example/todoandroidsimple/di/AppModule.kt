@@ -3,6 +3,7 @@ package com.example.todoandroidsimple.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.example.todoandroidsimple.data.local.book.BookDao
 import com.example.todoandroidsimple.data.local.book.BookDatabase
 import com.example.todoandroidsimple.data.local.images.ImageDownloader
@@ -85,6 +86,14 @@ object AppModule {
     @Provides
     fun provideNetworkUtils(@ApplicationContext context: Context): NetworkUtils {
         return NetworkUtils(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(
+        @ApplicationContext context: Context
+    ): WorkManager {
+        return WorkManager.getInstance(context)
     }
 
 }

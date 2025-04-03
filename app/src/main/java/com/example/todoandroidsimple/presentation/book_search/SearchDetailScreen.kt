@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -54,7 +54,7 @@ fun SearchDetailScreen(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -62,43 +62,49 @@ fun SearchDetailScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(16.dp)
-                .fillMaxSize()
-        ) {
-            if (book == null) {
-                Text("Loading...")
-                return@Column
-            }
 
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(book!!.thumbnail)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "null",
-                contentScale = ContentScale.Crop,
+        book?.let { book ->
+            Column(
                 modifier = Modifier
-                    .widthIn(max = 400.dp)
-                    .height(250.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .fillMaxSize()
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(book.thumbnail)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "null",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .widthIn(max = 400.dp)
+                        .height(250.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Text(book!!.title, style = MaterialTheme.typography.headlineSmall)
-            Text(book!!.authors, style = MaterialTheme.typography.bodyMedium)
+                Text(book.title, style = MaterialTheme.typography.headlineSmall)
+                Text(book.authors, style = MaterialTheme.typography.bodyMedium)
 
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(book!!.description, style = MaterialTheme.typography.bodySmall)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(book.description, style = MaterialTheme.typography.bodySmall)
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { uriHandler.openUri(book!!.previewLink) }) {
-                Text("Read Preview")
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = { uriHandler.openUri(book.previewLink) }) {
+                    Text("Read Preview")
+                }
+            }
+        } ?: run {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .fillMaxSize()
+            ) {
+                Text("Loading...")
             }
         }
     }
 }
-

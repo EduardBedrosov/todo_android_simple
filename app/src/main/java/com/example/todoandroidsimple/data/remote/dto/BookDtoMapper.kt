@@ -13,7 +13,8 @@ fun BookDto.toBookEntity(): BookEntity {
         publishedDate = this.volumeInfo.publishedDate ?: "Unknown Date",
         thumbnail = this.volumeInfo.imageLinks?.thumbnail ?: "",
         previewLink = this.volumeInfo.previewLink ?: "",
-        thumbnailLocalUri = this.volumeInfo.thumbnailLocalUri ?: ""
+        thumbnailLocalUri = this.volumeInfo.thumbnailLocalUri ?: "",
+        isImageDownloaded = this.volumeInfo.isImageDownloaded ?: false
     )
 }
 
@@ -29,6 +30,7 @@ fun BookEntity.toBookItem(): BookItem {
         bookId = id,
         title = title,
         authors = authors,
+        isImageDownloaded = isImageDownloaded,
     )
 }
 
@@ -40,6 +42,7 @@ fun BookEntity.toBookDetailItem(): BookDetailItem {
         description = description ?: "",
         thumbnail = thumbnail ?: "",
         previewLink = previewLink ?: "",
-        thumbnailLocalUri = thumbnailLocalUri ?: ""
+        thumbnailLocalUri = thumbnailLocalUri ?: "",
+        isImageDownloaded = isImageDownloaded ?: false,
     )
 }

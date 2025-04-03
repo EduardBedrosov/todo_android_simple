@@ -2,10 +2,10 @@ package com.example.todoandroidsimple.presentation.book_search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -44,6 +44,9 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel = hilt
         onSaveClick = { bookId ->
             viewModel.saveBook(bookId)
         },
+        onAddButtonClick = { bookId ->
+            viewModel.addBook(bookId)
+        },
         onUpdate = {
             viewModel.updateSearchValue(it)
         }
@@ -56,6 +59,7 @@ fun SearchContent(
     searchQuery: String,
     onClick: (String) -> Unit,
     onSaveClick: (String) -> Unit,
+    onAddButtonClick: (String) -> Unit,
     onUpdate: (String) -> Unit
 ) {
 
@@ -93,7 +97,8 @@ fun SearchContent(
                     BookItem(
                         book = book,
                         onSaveClick = onSaveClick,
-                        onClick = onClick
+                        onAddButtonClick = onAddButtonClick,
+                        onClick = onClick,
                     )
                 }
             }
@@ -102,7 +107,12 @@ fun SearchContent(
 }
 
 @Composable
-fun BookItem(book: BookItem, onSaveClick: (String) -> Unit, onClick: (String) -> Unit) {
+fun BookItem(
+    book: BookItem,
+    onSaveClick: (String) -> Unit,
+    onAddButtonClick: (String) -> Unit,
+    onClick: (String) -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,9 +127,15 @@ fun BookItem(book: BookItem, onSaveClick: (String) -> Unit, onClick: (String) ->
             Column(modifier = Modifier.weight(1f)) {
                 Text(book.title, style = MaterialTheme.typography.titleMedium)
                 Text(book.authors, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                Button(onClick = { onSaveClick(book.bookId) }) {
-                    println("666666")
-                    Text("Save")
+                Row {
+                    Button(onClick = { onSaveClick(book.bookId) }) {
+                        println("666666")
+                        Text("Save")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(onClick = { onAddButtonClick(book.bookId) }) {
+                        Text("Add to Favorites")
+                    }
                 }
             }
         }
@@ -130,11 +146,12 @@ fun BookItem(book: BookItem, onSaveClick: (String) -> Unit, onClick: (String) ->
 @Composable
 fun SearchContentPreview() {
     SearchContent(
-        books = listOf(BookItem("gdhsg", title = "tutle", authors = "authors")),
+        books = listOf(BookItem("gdhsg", title = "tutle", authors = "authors", isImageDownloaded = false)),
         searchQuery = "",
         onClick = {},
         onUpdate = {},
         onSaveClick = {},
+        onAddButtonClick = {}
     )
 }
 

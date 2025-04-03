@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -57,7 +57,7 @@ fun BookDetailedScreen(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -65,21 +65,17 @@ fun BookDetailedScreen(
             )
         }
     ) { innerPadding ->
+        book?.let { book ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            if (book == null) {
-                println("11111 123 null")
-                Text("Loading...")
-                return@Column
-            }
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(File(book!!.thumbnailLocalUri))
+                    .data(File(book.thumbnailLocalUri))
                     .crossfade(true)
                     .build(),
                 contentDescription = "Book Cover",
@@ -92,15 +88,25 @@ fun BookDetailedScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
 
-            Text(book!!.title, style = MaterialTheme.typography.headlineSmall)
-            Text(book!!.authors, style = MaterialTheme.typography.bodyMedium)
+            Text(book.title, style = MaterialTheme.typography.headlineSmall)
+            Text(book.authors, style = MaterialTheme.typography.bodyMedium)
 
             Spacer(modifier = Modifier.height(8.dp))
-            Text(book!!.description, style = MaterialTheme.typography.bodySmall)
+            Text(book.description, style = MaterialTheme.typography.bodySmall)
 
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { uriHandler.openUri(book!!.previewLink) }) {
+            Button(onClick = { uriHandler.openUri(book.previewLink) }) {
                 Text("Read Preview")
+            }
+        }
+    }?: run {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .fillMaxSize()
+            ) {
+                Text("Loading...")
             }
         }
     }

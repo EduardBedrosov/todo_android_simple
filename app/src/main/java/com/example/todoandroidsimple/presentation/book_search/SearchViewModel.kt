@@ -74,9 +74,16 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun addBook(bookId: String) {
+        viewModelScope.launch {
+            _bookEntity.value.find { it.id == bookId }?.let { bookEntity ->
+                repository.addBook(bookEntity)
+            }
+        }
+    }
 
-    1. Save change to Add, when click add, add the item to favorite with indicator that not downloaded
-    2 in favorites add button downlaod all , by Worker download all items
-    3 after finish get notification
-    4. work-runtime
+//    1. Save change to Add, when click add, add the item to favorite with indicator that not downloaded
+//    2 in favorites add button downlaod all , by Worker download all items
+//    3 after finish get notification
+//    4. work-runtime
 }

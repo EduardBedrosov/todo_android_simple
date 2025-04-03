@@ -19,11 +19,13 @@ import com.example.todoandroidsimple.presentation.note.NoteViewModel
 import com.example.todoandroidsimple.presentation.saved.BookDetailedScreen
 import com.example.todoandroidsimple.presentation.saved.SavedScreen
 import com.example.todoandroidsimple.presentation.saved.SavedViewModel
+import com.example.todoandroidsimple.util.NotificationPermissions
 
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
 
+    NotificationPermissions()
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->

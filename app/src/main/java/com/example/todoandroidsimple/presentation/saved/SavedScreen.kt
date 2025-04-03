@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -35,24 +36,48 @@ fun SavedScreen(
 
     val books by viewModel.books.collectAsState()
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    Column {
+        Button(
+            onClick = {
+                viewModel.downloadAllBooks()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Text("Save All Unsaved Images")
+        }
 
-        items(books) { book ->
+        Spacer(modifier = Modifier.width(8.dp))
 
-            SavedBookItem(
-                book = book,
-                onClick = {
-                    navController.navigate(Screen.BookDetailed.createRoute(book.bookId))
-                }
-            ){
-                viewModel.deleteBook(book.bookId)
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+            items(books) { book ->
+
+                SavedBookItem(
+                    book = book,
+                    onClick = {
+                        navController.navigate(Screen.BookDetailed.createRoute(book.bookId))
+                    },
+                    onDelete = {
+                        viewModel.deleteBook(book.bookId)
+                    },
+                    onSaveClick = {
+                        viewModel.saveBook(book.bookId)
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun SavedBookItem(book: BookItem, onClick: () -> Unit, onDelete: () -> Unit) {
+fun SavedBookItem(
+    book: BookItem,
+    onClick: () -> Unit,
+    onDelete: () -> Unit,
+    onSaveClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,14 +86,26 @@ fun SavedBookItem(book: BookItem, onClick: () -> Unit, onDelete: () -> Unit) {
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
-
-            Spacer(modifier = Modifier.width(8.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(book.title, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(book.authors, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                Button(onClick = onDelete) {
-                    Text("Delete")
+
+                Row {
+                    Button(onClick = onDelete) {
+                        Text("Delete")
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    if (!book.isImageDownloaded) {
+                        Button(
+                            onClick = onSaveClick,
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                        ) {
+                            Text("Save")
+                        }
+                    }
                 }
             }
         }
